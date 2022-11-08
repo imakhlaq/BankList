@@ -80,7 +80,6 @@ const transaction = function (movement) {
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 };
-transaction(account1.movements);
 
 //converting euros to dollers
 const eurosToDollers = 1.1;
@@ -95,7 +94,6 @@ const calacDisplayBalance = function (movement) {
   }, 0); // acc initail value
   labelBalance.textContent = `${balance}€`;
 };
-calacDisplayBalance(account1.movements);
 
 //computing usernames property for objects
 
@@ -139,7 +137,41 @@ const calcTotalInOut = function (movements) {
   //setting value of Interst
   labelSumInterest.textContent = `${Math.round(interest)}€`;
 };
-calcTotalInOut(account1.movements);
+
+//input username
+let inputuser;
+
+//event handlers
+btnLogin.addEventListener('click', function (e) {
+  //preventing refresh on form button click
+  e.preventDefault();
+  //if you press enter key and you are in input area(any one of them) it will tigger submit button
+  inputuser = accounts.find(user => user.userName === inputLoginUsername.value);
+
+  const inputPin = inputLoginPin.value;
+
+  if (inputuser?.pin === Number(inputPin)) {
+    //changing uI
+    labelWelcome.textContent = `WelCome ${inputuser.owner}`;
+
+    //opacity
+    containerApp.style.opacity = 100;
+
+    // deleting value from input feilds
+    inputLoginPin.value = inputLoginUsername.value = '';
+
+    //showing logged in user details
+
+    //transactions
+    transaction(inputuser.movements);
+
+    //total available balance
+    calacDisplayBalance(inputuser.movements);
+
+    //rest of in out and interst details
+    calcTotalInOut(inputuser.movements);
+  }
+});
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
