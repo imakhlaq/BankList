@@ -87,6 +87,15 @@ const eurosToDollers = 1.1;
 const movementsInDoller = account1.movements.map(value => {
   return value * 2;
 });
+calacDisplayBalance(account1.movements);
+
+//calculating final amount in acc
+const calacDisplayBalance = function (movement) {
+  const balance = movement.reduce((acc, value) => {
+    return acc + value;
+  }, 0); // acc initail value
+  labelBalance.textContent = `${balance} EUR`;
+};
 
 //computing usernames property for objects
 
@@ -105,10 +114,6 @@ const createUserName = function (acc) {
 };
 createUserName(accounts);
 
-//calculating final amount in acc
-const balance = movements.reduce((acc, value) => {
-  return acc + value;
-}, 0); // acc initail value
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
