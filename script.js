@@ -87,15 +87,15 @@ const eurosToDollers = 1.1;
 const movementsInDoller = account1.movements.map(value => {
   return value * 2;
 });
-calacDisplayBalance(account1.movements);
 
 //calculating final amount in acc
 const calacDisplayBalance = function (movement) {
   const balance = movement.reduce((acc, value) => {
     return acc + value;
   }, 0); // acc initail value
-  labelBalance.textContent = `${balance} EUR`;
+  labelBalance.textContent = `${balance}€`;
 };
+calacDisplayBalance(account1.movements);
 
 //computing usernames property for objects
 
@@ -114,7 +114,32 @@ const createUserName = function (acc) {
 };
 createUserName(accounts);
 
+//total amount in account
+const calcTotalInOut = function (movements) {
+  const totalIn = movements
+    .filter(value => value > 0)
+    .reduce((acc, value) => acc + value, 0);
 
+  //setting value of in
+  labelSumIn.textContent = `${totalIn}€`;
+
+  //total amount in removed from account
+  const totalout = movements
+    .filter(value => value < 0)
+    .reduce((acc, value) => acc + value, 0);
+
+  //setting value of out
+  labelSumOut.textContent = `${totalout}€`;
+
+  //total interest
+  const interest = movements
+    .filter(value => value > 0)
+    .map(value => (value * 1.2) / 100)
+    .reduce((accu, value) => accu + value, 0);
+  //setting value of Interst
+  labelSumInterest.textContent = `${Math.round(interest)}€`;
+};
+calcTotalInOut(account1.movements);
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
