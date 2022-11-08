@@ -159,6 +159,7 @@ btnLogin.addEventListener('click', function (e) {
 
     // deleting value from input feilds
     inputLoginPin.value = inputLoginUsername.value = '';
+    inputLoginPin.blur();
 
     //showing logged in user details
 
@@ -172,4 +173,9 @@ btnLogin.addEventListener('click', function (e) {
     calcTotalInOut(inputuser.movements);
   }
 });
-
+btnSort.addEventListener('click', () => {
+  const sorted = [...inputuser.movements];
+  sorted.sort();
+  console.log(sorted);
+  transaction(sorted);
+});
