@@ -144,10 +144,10 @@ const calcTotalInOut = function (account) {
   //total interest
   const interest = account.movements
     .filter(value => value > 0)
-    .map(value => (account.interestRate / value) * 100)
+    .map(value => (account.interestRate * value) / 100)
     .reduce((accu, value) => accu + value, 0);
   //setting value of Interst
-  labelSumInterest.textContent = `${Math.round(interest)}€`;
+  labelSumInterest.textContent = `${interest}€`;
 };
 
 //input username
@@ -211,6 +211,28 @@ btnTransfer.addEventListener('click', function (e) {
     inputTransferAmount.blur();
   }
 });
+
+//loan (only if 10% of requested anount is deposited in the account)
+
+btnLoan.addEventListener('click', function (e) {
+  //default
+  e.preventDefault();
+
+  const reqloanAmt = Number(inputLoanAmount.value);
+
+  const req10p = (reqloanAmt / 100) * 10;
+
+  const isEligible = inputuser.movements.some(amt => amt >= req10p);
+
+  if (isEligible) {
+    //giving loan
+    inputuser.movements.push(reqloanAmt);
+
+    //updating ui
+    uiUpdate(inputuser);
+  }
+});
+
 //delete account
 
 btnClose.addEventListener('click', function (e) {
@@ -235,6 +257,9 @@ btnClose.addEventListener('click', function (e) {
 btnSort.addEventListener('click', () => {
   const sorted = [...inputuser.movements];
   sorted.sort();
-  console.log(sorted);
-  transaction(sorted);
+  inputuser.movements = [...sorted];
+
+  transaction(inputuser.movements);
 });
+
+
