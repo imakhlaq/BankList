@@ -113,6 +113,17 @@ const createUserName = function (acc) {
 };
 createUserName(accounts);
 
+const uiUpdate = function (user) {
+  //transactions
+  transaction(user.movements);
+
+  //total available balance
+  calacDisplayBalance(user);
+
+  //rest of in out and interst details
+  calcTotalInOut(user);
+};
+
 //total amount in account
 const calcTotalInOut = function (account) {
   const totalIn = account.movements
@@ -164,14 +175,7 @@ btnLogin.addEventListener('click', function (e) {
 
     //showing logged in user details
 
-    //transactions
-    transaction(inputuser.movements);
-
-    //total available balance
-    calacDisplayBalance(inputuser);
-
-    //rest of in out and interst details
-    calcTotalInOut(inputuser);
+    uiUpdate(inputuser);
   }
 });
 
@@ -187,16 +191,19 @@ btnTransfer.addEventListener('click', function (e) {
 
   const sentAmount = Number(inputTransferAmount.value);
 
-  if (reciverid && inputuser.balance >= sentAmount) {
+  if (
+    reciverid &&
+    sentAmount > 0 &&
+    reciverid !== inputuser &&
+    inputuser.balance >= sentAmount
+  ) {
     //add reciver amount
     reciverid.movements.push(sentAmount);
     //remove sender amount
     inputuser.movements.push(-1 * sentAmount);
 
     //updating UI
-    transaction(inputuser.movements);
-    calcTotalInOut(inputuser);
-    calacDisplayBalance(inputuser);
+    uiUpdate(inputuser);
 
     //reseting feilds
     // deleting value from input feilds
@@ -204,6 +211,27 @@ btnTransfer.addEventListener('click', function (e) {
     inputTransferAmount.blur();
   }
 });
+//delete account
+
+btnClose.addEventListener('click', function (e) {
+  //preventing refresh on form button click
+  e.preventDefault();
+
+  const closeAccId = inputCloseUsername.value;
+
+  const closeAccPin = Number(inputClosePin.value);
+
+  if (closeAccId === inputuser.userName && closeAccPin === inputuser.pin) {
+    const accToDelete = accounts.findIndex(acc => acc.userName === closeAccId);
+    //deleting exactly one element
+    accounts.splice(accToDelete, 1);
+    //hiding UI
+    containerApp.style.opacity = 0;
+  }
+  //setting back input feilds
+  inputCloseUsername.value = inputClosePin.value = '';
+});
+
 btnSort.addEventListener('click', () => {
   const sorted = [...inputuser.movements];
   sorted.sort();
