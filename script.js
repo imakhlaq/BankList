@@ -7,9 +7,22 @@
 // Data
 const account1 = {
   owner: 'Jonas Schmedtmann',
-  movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
+  movements: [200, 455.23, -306.5, 25000, -642.21, -133.9, 79.97, 1300],
   interestRate: 1.2, // %
   pin: 1111,
+
+  movementsDates: [
+    '2019-11-18T21:31:17.178Z',
+    '2019-12-23T07:42:02.383Z',
+    '2020-01-28T09:15:04.904Z',
+    '2020-04-01T10:17:24.185Z',
+    '2020-05-08T14:11:59.604Z',
+    '2020-07-26T17:01:17.194Z',
+    '2020-07-28T23:36:17.929Z',
+    '2020-08-01T10:51:36.790Z',
+  ],
+  currency: 'EUR',
+  locale: 'pt-PT', // de-DE
 };
 
 const account2 = {
@@ -17,23 +30,22 @@ const account2 = {
   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
   interestRate: 1.5,
   pin: 2222,
+
+  movementsDates: [
+    '2019-11-01T13:15:33.035Z',
+    '2019-11-30T09:48:16.867Z',
+    '2019-12-25T06:04:23.907Z',
+    '2020-01-25T14:18:46.235Z',
+    '2020-02-05T16:33:06.386Z',
+    '2020-04-10T14:43:26.374Z',
+    '2020-06-25T18:49:59.371Z',
+    '2020-07-26T12:01:20.894Z',
+  ],
+  currency: 'USD',
+  locale: 'en-US',
 };
 
-const account3 = {
-  owner: 'Steven Thomas Williams',
-  movements: [200, -200, 340, -300, -20, 50, 400, -460],
-  interestRate: 0.7,
-  pin: 3333,
-};
-
-const account4 = {
-  owner: 'Sarah Smith',
-  movements: [430, 1000, 700, 50, 90],
-  interestRate: 1,
-  pin: 4444,
-};
-
-const accounts = [account1, account2, account3, account4];
+const accounts = [account1, account2];
 
 // Elements
 const labelWelcome = document.querySelector('.welcome');
@@ -74,7 +86,7 @@ const transaction = function (movement) {
     ${i + 1} ${type}
     </div>
      <div class="movements__date">24/01/2037</div>
-     <div class="movements__value">${move}€</div>
+     <div class="movements__value">${move.toFixed(2)}€</div>
     </div>`;
 
     containerMovements.insertAdjacentHTML('afterbegin', html);
@@ -92,7 +104,7 @@ const calacDisplayBalance = function (acc) {
   const balance = acc.movements.reduce((accu, value) => {
     return accu + value;
   }, 0); // acc initail value
-  labelBalance.textContent = `${balance}€`;
+  labelBalance.textContent = `${balance.toFixed(2)}€`;
   acc.balance = balance;
 };
 
@@ -113,6 +125,32 @@ const createUserName = function (acc) {
 };
 createUserName(accounts);
 
+//total amount in account
+const calcTotalInOut = function (account) {
+  const totalIn = account.movements
+    .filter(value => value > 0)
+    .reduce((acc, value) => acc + value, 0);
+
+  //setting value of in
+  labelSumIn.textContent = `${totalIn.toFixed(2)}€`;
+
+  //total amount in removed from account
+  const totalout = account.movements
+    .filter(value => value < 0)
+    .reduce((acc, value) => acc + value, 0);
+
+  //setting value of out
+  labelSumOut.textContent = `${totalout.toFixed(2)}€`;
+
+  //total interest
+  const interest = account.movements
+    .filter(value => value > 0)
+    .map(value => (account.interestRate * value) / 100)
+    .reduce((accu, value) => accu + value, 0);
+  //setting value of Interst
+  labelSumInterest.textContent = `${interest.toFixed(2)}€`;
+};
+
 const uiUpdate = function (user) {
   //transactions
   transaction(user.movements);
@@ -122,32 +160,6 @@ const uiUpdate = function (user) {
 
   //rest of in out and interst details
   calcTotalInOut(user);
-};
-
-//total amount in account
-const calcTotalInOut = function (account) {
-  const totalIn = account.movements
-    .filter(value => value > 0)
-    .reduce((acc, value) => acc + value, 0);
-
-  //setting value of in
-  labelSumIn.textContent = `${totalIn}€`;
-
-  //total amount in removed from account
-  const totalout = account.movements
-    .filter(value => value < 0)
-    .reduce((acc, value) => acc + value, 0);
-
-  //setting value of out
-  labelSumOut.textContent = `${totalout}€`;
-
-  //total interest
-  const interest = account.movements
-    .filter(value => value > 0)
-    .map(value => (account.interestRate * value) / 100)
-    .reduce((accu, value) => accu + value, 0);
-  //setting value of Interst
-  labelSumInterest.textContent = `${interest}€`;
 };
 
 //input username
@@ -218,7 +230,7 @@ btnLoan.addEventListener('click', function (e) {
   //default
   e.preventDefault();
 
-  const reqloanAmt = Number(inputLoanAmount.value);
+  const reqloanAmt = Math.floor(inputLoanAmount.value);
 
   const req10p = (reqloanAmt / 100) * 10;
 
@@ -274,85 +286,6 @@ btnSort.addEventListener('click', () => {
     isSorted = !isSorted;
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // practice
 // const total = accounts
