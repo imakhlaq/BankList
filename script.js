@@ -88,11 +88,12 @@ const movementsInDoller = account1.movements.map(value => {
 });
 
 //calculating final amount in acc
-const calacDisplayBalance = function (movement) {
-  const balance = movement.reduce((acc, value) => {
-    return acc + value;
+const calacDisplayBalance = function (acc) {
+  const balance = acc.movements.reduce((accu, value) => {
+    return accu + value;
   }, 0); // acc initail value
   labelBalance.textContent = `${balance}€`;
+  acc.balance = balance;
 };
 
 //computing usernames property for objects
@@ -132,7 +133,7 @@ const calcTotalInOut = function (account) {
   //total interest
   const interest = account.movements
     .filter(value => value > 0)
-    .map(value => value * account.interestRate)
+    .map(value => (account.interestRate / value) * 100)
     .reduce((accu, value) => accu + value, 0);
   //setting value of Interst
   labelSumInterest.textContent = `${Math.round(interest)}€`;
@@ -167,7 +168,7 @@ btnLogin.addEventListener('click', function (e) {
     transaction(inputuser.movements);
 
     //total available balance
-    calacDisplayBalance(inputuser.movements);
+    calacDisplayBalance(inputuser);
 
     //rest of in out and interst details
     calcTotalInOut(inputuser);
@@ -183,15 +184,21 @@ btnTransfer.addEventListener('click', function (e) {
   const reciverid = accounts.find(
     user => user.userName === inputTransferTo.value
   );
-  console.log(reciverid);
+
   const sentAmount = Number(inputTransferAmount.value);
 
-  if (reciverid) {
+  if (reciverid && inputuser.balance >= sentAmount) {
+    console.log(reciverid);
     reciverid.movements.push(sentAmount);
     inputuser.movements.push(-1 * sentAmount);
     transaction(inputuser.movements);
     calcTotalInOut(inputuser);
-    calacDisplayBalance(inputuser.movements);
+    calacDisplayBalance(inputuser);
+
+    //reseting feilds
+    // deleting value from input feilds
+    inputTransferTo.value = inputTransferAmount.value = '';
+    inputTransferAmount.blur();
   }
 });
 btnSort.addEventListener('click', () => {
