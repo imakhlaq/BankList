@@ -192,6 +192,8 @@ btnTransfer.addEventListener('click', function (e) {
     reciverid.movements.push(sentAmount);
     //remove sender amount
     inputuser.movements.push(-1 * sentAmount);
+
+    //updating UI
     transaction(inputuser.movements);
     calcTotalInOut(inputuser);
     calacDisplayBalance(inputuser);
