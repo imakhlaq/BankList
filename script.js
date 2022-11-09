@@ -254,6 +254,8 @@ btnClose.addEventListener('click', function (e) {
   inputCloseUsername.value = inputClosePin.value = '';
 });
 
+//sorting functinality
+let isSorted = false;
 btnSort.addEventListener('click', () => {
   const sorted = [...inputuser.movements];
   //sort function by default work on strings to correct this we have to use comnparator function
@@ -264,6 +266,11 @@ btnSort.addEventListener('click', () => {
       return 1;
     }
   });
-
-  transaction(sorted);
+  if (!isSorted) {
+    transaction(sorted);
+    isSorted = !isSorted;
+  } else {
+    transaction(inputuser.movements);
+    isSorted = !isSorted;
+  }
 });
