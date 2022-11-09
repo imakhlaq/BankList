@@ -188,8 +188,9 @@ btnTransfer.addEventListener('click', function (e) {
   const sentAmount = Number(inputTransferAmount.value);
 
   if (reciverid && inputuser.balance >= sentAmount) {
-    console.log(reciverid);
+    //add reciver amount
     reciverid.movements.push(sentAmount);
+    //remove sender amount
     inputuser.movements.push(-1 * sentAmount);
     transaction(inputuser.movements);
     calcTotalInOut(inputuser);
