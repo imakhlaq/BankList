@@ -256,10 +256,14 @@ btnClose.addEventListener('click', function (e) {
 
 btnSort.addEventListener('click', () => {
   const sorted = [...inputuser.movements];
-  sorted.sort();
-  inputuser.movements = [...sorted];
+  //sort function by default work on strings to correct this we have to use comnparator function
+  sorted.sort((el1, el2) => {
+    if (el1 < el2) {
+      return -1;
+    } else {
+      return 1;
+    }
+  });
 
-  transaction(inputuser.movements);
+  transaction(sorted);
 });
-
-
