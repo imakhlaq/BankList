@@ -113,8 +113,8 @@ const createUserName = function (acc) {
 createUserName(accounts);
 
 //total amount in account
-const calcTotalInOut = function (movements) {
-  const totalIn = movements
+const calcTotalInOut = function (account) {
+  const totalIn = account.movements
     .filter(value => value > 0)
     .reduce((acc, value) => acc + value, 0);
 
@@ -122,7 +122,7 @@ const calcTotalInOut = function (movements) {
   labelSumIn.textContent = `${totalIn}€`;
 
   //total amount in removed from account
-  const totalout = movements
+  const totalout = account.movements
     .filter(value => value < 0)
     .reduce((acc, value) => acc + value, 0);
 
@@ -130,9 +130,9 @@ const calcTotalInOut = function (movements) {
   labelSumOut.textContent = `${totalout}€`;
 
   //total interest
-  const interest = movements
+  const interest = account.movements
     .filter(value => value > 0)
-    .map(value => (value * 1.2) / 100)
+    .map(value => value * account.interestRate)
     .reduce((accu, value) => accu + value, 0);
   //setting value of Interst
   labelSumInterest.textContent = `${Math.round(interest)}€`;
@@ -170,7 +170,28 @@ btnLogin.addEventListener('click', function (e) {
     calacDisplayBalance(inputuser.movements);
 
     //rest of in out and interst details
-    calcTotalInOut(inputuser.movements);
+    calcTotalInOut(inputuser);
+  }
+});
+
+//transfer money
+
+btnTransfer.addEventListener('click', function (e) {
+  //preventing refresh on form button click
+  e.preventDefault();
+
+  const reciverid = accounts.find(
+    user => user.userName === inputTransferTo.value
+  );
+  console.log(reciverid);
+  const sentAmount = Number(inputTransferAmount.value);
+
+  if (reciverid) {
+    reciverid.movements.push(sentAmount);
+    inputuser.movements.push(-1 * sentAmount);
+    transaction(inputuser.movements);
+    calcTotalInOut(inputuser);
+    calacDisplayBalance(inputuser.movements);
   }
 });
 btnSort.addEventListener('click', () => {
