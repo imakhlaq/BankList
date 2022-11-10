@@ -89,7 +89,7 @@ const transaction = function (movement, acc) {
 
     //for today and yesterday logic
     const dayCal = function (day1, day2) {
-      return Math.round(Math.abs((day1 - day2) / (1000 * 60 * 60 * 24)));
+      return Math.floor(Math.abs((day1 - day2) / (1000 * 60 * 60 * 24)));
     };
 
     let transdate;
