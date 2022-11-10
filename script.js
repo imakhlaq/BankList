@@ -32,7 +32,7 @@ const account2 = {
   pin: 2222,
 
   movementsDates: [
-    '2019-11-01T13:15:33.035Z',
+    '2022-11-11T13:15:33.035Z',
     '2019-11-30T09:48:16.867Z',
     '2019-12-25T06:04:23.907Z',
     '2020-01-25T14:18:46.235Z',
@@ -75,17 +75,40 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 //making movements work
 
-const transaction = function (movement) {
+const transaction = function (movement, acc) {
   // removing html from
   containerMovements.innerHTML = '';
   movement.forEach((move, i) => {
+    //accesing and creating dates
+    const dateofTc = new Date(acc.movementsDates[i]);
+    const curDate = new Date();
+    //
+    const year = dateofTc.getFullYear();
+    const month = `${dateofTc.getMonth() + 1}`.padStart(2, 0);
+    const day = `${dateofTc.getDate()}`.padStart(2, 0);
+
+
+    //for today and yesterday logic
+    const dayCal = function (day1, day2) {
+      return Math.floor(Math.abs((day1 - day2) / (1000 * 60 * 60 * 24)));
+    };
+  
+    let transdate;
+    if (dayCal(curDate, dateofTc) === 0) {
+      transdate = `Today`;
+    } else if (dayCal(curDate, dateofTc) === 1) {
+      transdate = `Yesterday`;
+    } else {
+      transdate = `${day}/${month}/${year}`;
+    }
+
     const type = move < 0 ? 'withdrawal' : 'deposit';
     const html = `
     <div class="movements__row">
     <div class="movements__type movements__type--${type}">
     ${i + 1} ${type}
     </div>
-     <div class="movements__date">24/01/2037</div>
+     <div class="movements__date">${transdate}</div>
      <div class="movements__value">${move.toFixed(2)}€</div>
     </div>`;
 
@@ -153,7 +176,7 @@ const calcTotalInOut = function (account) {
 
 const uiUpdate = function (user) {
   //transactions
-  transaction(user.movements);
+  transaction(user.movements, user);
 
   //total available balance
   calacDisplayBalance(user);
@@ -211,8 +234,12 @@ btnTransfer.addEventListener('click', function (e) {
   ) {
     //add reciver amount
     reciverid.movements.push(sentAmount);
+    //recive time
+    reciverid.movementsDates.push(new Date().toISOString());
     //remove sender amount
     inputuser.movements.push(-1 * sentAmount);
+    //recive time
+    inputuser.movementsDates.push(new Date().toISOString());
 
     //updating UI
     uiUpdate(inputuser);
@@ -239,6 +266,8 @@ btnLoan.addEventListener('click', function (e) {
   if (isEligible) {
     //giving loan
     inputuser.movements.push(reqloanAmt);
+    // time
+    inputuser.movementsDates.push(new Date().toISOString());
 
     //updating ui
     uiUpdate(inputuser);
@@ -279,13 +308,23 @@ btnSort.addEventListener('click', () => {
     }
   });
   if (!isSorted) {
-    transaction(sorted);
+    transaction(sorted, inputuser);
     isSorted = !isSorted;
   } else {
-    transaction(inputuser.movements);
+    transaction(inputuser.movements, inputuser);
     isSorted = !isSorted;
   }
 });
+
+//setting date
+const time = new Date();
+const year = time.getFullYear();
+const month = `${time.getMonth() + 1}`.padStart(2, 0);
+const day = `${time.getDate()}`.padStart(2, 0);
+const hour = time.getHours();
+const min = time.getMinutes();
+
+labelDate.textContent = `${day}/${month}/${year} at ${hour}:${min}`;
 
 // practice
 // const total = accounts
