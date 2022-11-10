@@ -210,6 +210,36 @@ btnLogin.addEventListener('click', function (e) {
     //showing logged in user details
 
     uiUpdate(inputuser);
+
+    //setting date
+    const time = new Date();
+
+    const options = {
+      hour: 'numeric',
+      minute: 'numeric',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    };
+
+    const local = 'pt-PT';
+
+    const localFormat = new Intl.DateTimeFormat('pt-PT').format(time);
+
+    console.log(localFormat);
+
+    //using API
+
+    labelDate.textContent = localFormat;
+
+    //normaly
+    // const year = time.getFullYear();
+    // const month = `${time.getMonth() + 1}`.padStart(2, 0);
+    // const day = `${time.getDate()}`.padStart(2, 0);
+    // const hour = time.getHours();
+    // const min = time.getMinutes();
+
+    // labelDate.textContent = `${day}/${month}/${year} at ${hour}:${min}`;
   }
 });
 
@@ -315,16 +345,6 @@ btnSort.addEventListener('click', () => {
   }
 });
 
-//setting date
-const time = new Date();
-const year = time.getFullYear();
-const month = `${time.getMonth() + 1}`.padStart(2, 0);
-const day = `${time.getDate()}`.padStart(2, 0);
-const hour = time.getHours();
-const min = time.getMinutes();
-
-labelDate.textContent = `${day}/${month}/${year} at ${hour}:${min}`;
-
 // practice
 // const total = accounts
 //   .map(value => {
@@ -429,3 +449,23 @@ GOOD LUCK 😀
 
 // const newdogs = dogs.slice().sort((a, b) => a.recommanded - b.recommanded);
 // console.log(newdogs);
+
+//using API to format in acces zone
+// const now = new Date();
+
+// const options = {
+//   hour: 'numeric',
+//   minute: 'numeric',
+//   day: 'numeric',
+//   month: 'short',
+//   year: 'numeric',
+// };
+// getting locak from browaer
+//const local = navigator.language;
+
+// const localFormat = new Intl.DateTimeFormat(
+//   'ja-JP-u-ca-japanese',
+//   options
+// ).format(now);
+
+// console.log(localFormat);
