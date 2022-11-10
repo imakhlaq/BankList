@@ -73,6 +73,21 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
+const formatTime = function (time) {
+  //crating custom object for values that needed from API
+  const options = {
+    hour: 'numeric',
+    minute: 'numeric',
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  };
+
+  const local = inputuser.locale;
+  //first parameter is local (eg (en-UK)) second is custom needed values .format(time.object)
+  return new Intl.DateTimeFormat(local, options).format(time);
+};
+
 //making movements work
 
 const transaction = function (movement, acc) {
@@ -83,9 +98,9 @@ const transaction = function (movement, acc) {
     const dateofTc = new Date(acc.movementsDates[i]);
     const curDate = new Date();
     //
-    const year = dateofTc.getFullYear();
-    const month = `${dateofTc.getMonth() + 1}`.padStart(2, 0);
-    const day = `${dateofTc.getDate()}`.padStart(2, 0);
+    // const year = dateofTc.getFullYear();
+    // const month = `${dateofTc.getMonth() + 1}`.padStart(2, 0);
+    // const day = `${dateofTc.getDate()}`.padStart(2, 0);
 
     //for today and yesterday logic
     const dayCal = function (day1, day2) {
@@ -98,7 +113,7 @@ const transaction = function (movement, acc) {
     } else if (dayCal(curDate, dateofTc) === 1) {
       transdate = `Yesterday`;
     } else {
-      transdate = `${day}/${month}/${year}`;
+      transdate = formatTime(dateofTc);
     }
 
     const type = move < 0 ? 'withdrawal' : 'deposit';
@@ -214,21 +229,7 @@ btnLogin.addEventListener('click', function (e) {
     //setting date
 
     //using API
-    const time = new Date();
-    //crating custom object for values that needed from API
-    const options = {
-      hour: 'numeric',
-      minute: 'numeric',
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    };
-
-    const local = inputuser.locale;
-    //first parameter is local (eg (en-UK))second is custom needed body
-    const localFormat = new Intl.DateTimeFormat(local, options).format(time);
-
-    //setting
+    const localFormat = formatTime(new Date());
     labelDate.textContent = localFormat;
 
     //normaly
