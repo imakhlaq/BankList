@@ -212,8 +212,10 @@ btnLogin.addEventListener('click', function (e) {
     uiUpdate(inputuser);
 
     //setting date
-    const time = new Date();
 
+    //using API
+    const time = new Date();
+    //crating custom object for values that needed from API
     const options = {
       hour: 'numeric',
       minute: 'numeric',
@@ -222,14 +224,11 @@ btnLogin.addEventListener('click', function (e) {
       year: 'numeric',
     };
 
-    const local = 'pt-PT';
+    const local = inputuser.locale;
+    //first parameter is local (eg (en-UK))second is custom needed body
+    const localFormat = new Intl.DateTimeFormat(local, options).format(time);
 
-    const localFormat = new Intl.DateTimeFormat('pt-PT').format(time);
-
-    console.log(localFormat);
-
-    //using API
-
+    //setting
     labelDate.textContent = localFormat;
 
     //normaly
