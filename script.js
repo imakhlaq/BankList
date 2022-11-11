@@ -312,7 +312,15 @@ btnLoan.addEventListener('click', function (e) {
     inputuser.movementsDates.push(new Date().toISOString());
 
     //updating ui
-    uiUpdate(inputuser);
+    //also adding some delay
+    setTimeout(
+      user => {
+        uiUpdate(user);
+      },
+      2000,
+      inputuser
+    );
+    inputLoanAmount.value = '';
   }
 });
 
