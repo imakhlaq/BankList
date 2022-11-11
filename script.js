@@ -72,7 +72,7 @@ const inputTransferAmount = document.querySelector('.form__input--amount');
 const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
-
+// international api
 const formatTime = function (time) {
   //crating custom object for values that needed from API
   const options = {
@@ -214,6 +214,8 @@ const uiUpdate = function (user) {
 
 //input username
 let inputuser;
+let timer = 150;
+let t;
 
 //event handlers
 btnLogin.addEventListener('click', function (e) {
@@ -225,6 +227,31 @@ btnLogin.addEventListener('click', function (e) {
   const inputPin = inputLoginPin.value;
 
   if (inputuser?.pin === Number(inputPin)) {
+    const logOut = function () {
+      const tick = () => {
+        if (timer == 0) {
+          //hiding UI
+
+          containerApp.style.opacity = 0;
+          clearInterval(t);
+        }
+
+        let minute = String(Math.floor(timer / 60)).padStart(2, '0');
+        let sec = String(Math.floor(timer % 60)).padStart(2, '0');
+        labelTimer.textContent = `${minute}:${sec}`;
+        timer--;
+      };
+      tick();
+      t = setInterval(tick, 1000);
+      return t;
+    };
+
+    const timer1 = logOut();
+    if (timer1) {
+      clearInterval(t);
+    
+    }
+
     //changing uI
     labelWelcome.textContent = `WelCome ${inputuser.owner}`;
 
@@ -261,6 +288,7 @@ btnLogin.addEventListener('click', function (e) {
 btnTransfer.addEventListener('click', function (e) {
   //preventing refresh on form button click
   e.preventDefault();
+  timer = 150;
 
   const reciverid = accounts.find(
     user => user.userName === inputTransferTo.value
@@ -298,6 +326,8 @@ btnTransfer.addEventListener('click', function (e) {
 btnLoan.addEventListener('click', function (e) {
   //default
   e.preventDefault();
+  //logout counter update
+  timer = 150;
 
   const reqloanAmt = Math.floor(inputLoanAmount.value);
 
@@ -349,6 +379,7 @@ btnClose.addEventListener('click', function (e) {
 let isSorted = false;
 btnSort.addEventListener('click', () => {
   const sorted = [...inputuser.movements];
+  timer = 150;
   //sort function by default work on strings to correct this we have to use comnparator function
   sorted.sort((el1, el2) => {
     if (el1 < el2) {
