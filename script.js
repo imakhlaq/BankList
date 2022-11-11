@@ -87,7 +87,17 @@ const formatTime = function (time) {
   //first parameter is local (eg (en-UK)) second is custom needed values .format(time.object)
   return new Intl.DateTimeFormat(local, options).format(time);
 };
-
+// currancy change
+const calcCurrency = function (curr) {
+  const options = {
+    style: 'currency',
+    currency: `${inputuser.currency}`,
+  };
+  const moveWithcurr = new Intl.NumberFormat(inputuser.locale, options).format(
+    curr
+  );
+  return moveWithcurr;
+};
 //making movements work
 
 const transaction = function (movement, acc) {
@@ -117,13 +127,16 @@ const transaction = function (movement, acc) {
     }
 
     const type = move < 0 ? 'withdrawal' : 'deposit';
+
+    const moveWithcurr = calcCurrency(move);
+
     const html = `
     <div class="movements__row">
     <div class="movements__type movements__type--${type}">
     ${i + 1} ${type}
     </div>
      <div class="movements__date">${transdate}</div>
-     <div class="movements__value">${move.toFixed(2)}€</div>
+     <div class="movements__value">${moveWithcurr}</div>
     </div>`;
 
     containerMovements.insertAdjacentHTML('afterbegin', html);
@@ -141,7 +154,7 @@ const calacDisplayBalance = function (acc) {
   const balance = acc.movements.reduce((accu, value) => {
     return accu + value;
   }, 0); // acc initail value
-  labelBalance.textContent = `${balance.toFixed(2)}€`;
+  labelBalance.textContent = calcCurrency(balance);
   acc.balance = balance;
 };
 
@@ -169,7 +182,7 @@ const calcTotalInOut = function (account) {
     .reduce((acc, value) => acc + value, 0);
 
   //setting value of in
-  labelSumIn.textContent = `${totalIn.toFixed(2)}€`;
+  labelSumIn.textContent = calcCurrency(totalIn);
 
   //total amount in removed from account
   const totalout = account.movements
@@ -177,7 +190,7 @@ const calcTotalInOut = function (account) {
     .reduce((acc, value) => acc + value, 0);
 
   //setting value of out
-  labelSumOut.textContent = `${totalout.toFixed(2)}€`;
+  labelSumOut.textContent = calcCurrency(totalout);
 
   //total interest
   const interest = account.movements
@@ -185,7 +198,7 @@ const calcTotalInOut = function (account) {
     .map(value => (account.interestRate * value) / 100)
     .reduce((accu, value) => accu + value, 0);
   //setting value of Interst
-  labelSumInterest.textContent = `${interest.toFixed(2)}€`;
+  labelSumInterest.textContent = calcCurrency(interest);
 };
 
 const uiUpdate = function (user) {
